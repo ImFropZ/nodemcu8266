@@ -33,19 +33,20 @@ void loop() {
   if(!client) return;
   while(!client.available()) {}
   Serial.println(client.readStringUntil('\r'));
-  client.flush();
 
-  int value = LOW;
-  if(client.readStringUntil('\r').indexOf("/led/1") != -1) {
-    value = HIGH;
-    digitalWrite(outputPin, value);
-  }else if(client.readStringUntil('\r').indexOf("/led/0") != -1) {
-    value = LOW;
-    digitalWrite(outputPin, value);
+  if(client.readStringUntil('\r').indexOf("/led/") != -1) {
+    int value = LOW;
+    if(client.readStringUntil('\r').indexOf("/led/1") != -1) {
+      value = HIGH;
+      digitalWrite(outputPin, value);
+    }else if(client.readStringUntil('\r').indexOf("/led/0") != -1) {
+      value = LOW;
+      digitalWrite(outputPin, value);
+    }
+
+    client.println("<html>\n<head><head/>");
+    client.println("<body>");
+    client.println(value);
+    client.println("<body/>\n<html/>");
   }
-
-  client.println("<html>\n<head><head/>");
-  client.println("<body>");
-  client.println(value);
-  client.println("<body/>\n<html/>");
 }
